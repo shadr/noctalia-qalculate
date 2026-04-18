@@ -8,14 +8,11 @@ import qs.Widgets
 Item {
     id: root
 
-    // Plugin API (injected by PluginPanelSlot)
     property var pluginApi: null
 
-    // SmartPanel properties (required for panel behavior)
     readonly property var geometryPlaceholder: panelContainer
     readonly property bool allowAttach: true
 
-    // Preferred dimensions
     property real contentPreferredWidth: 680 * Style.uiScaleRatio
     property real contentPreferredHeight: 540 * Style.uiScaleRatio
 
@@ -24,24 +21,74 @@ Item {
     readonly property bool panelAnchorVerticalCenter: true;
 
     property string result: "";
+    property string answer: "";
     property bool calculationFailed: false;
+
+    function extractAnswer(res) {
+        if (!res || res.startsWith("warning")) return "";
+        var parts = res.split("=");
+        if (parts.length < 2) return "";
+        var val = parts[parts.length - 1].trim();
+        if (val.startsWith("≈ ")) val = val.substring(2);
+        if (val.startsWith("approx. ")) val = val.substring(8);
+        return val;
+    }
+
+    Timer {
+        id: debounceTimer
+        interval: 100
+        onTriggered: runCalculation()
+    }
 
     Process {
         id: calcProc
+        running: false
 
         stdout: StdioCollector {
             onTextChanged: {
                 root.result = text.trim()
                 root.calculationFailed = root.result.startsWith("warning")
+                root.answer = extractAnswer(text.trim())
             }
         }
     }
 
-    function updateResults() {
-        if (searchInput.text == "") return;
-
+    function runCalculation() {
+        if (searchInput.text == "") {
+            result = "";
+            answer = "";
+            return;
+        }
         calcProc.command = ["qalc", "-s", "update_exchange_rates 1days", searchInput.text]
         calcProc.running = true;
+    }
+
+    function updateResults() {
+        debounceTimer.restart()
+    }
+
+    function copyAnswer() {
+        if (answer) {
+            copyToClipboard(answer)
+        }
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === Qt.Key_C && event.modifiers & Qt.ControlModifier) {
+            event.accepted = true
+            copyAnswer()
+        } else if (event.key === Qt.Key_Escape) {
+            searchInput.text = ""
+            result = ""
+            answer = ""
+            pluginApi.closePanel()
+        }
+    }
+
+    Process { id: panelClipProc }
+    function copyToClipboard(text) {
+        if (!text || text === "") return
+        panelClipProc.exec({ command: ["bash", "-c", "printf '%s' " + text + " | wl-copy 2>/dev/null"] })
     }
 
     ColumnLayout {
@@ -63,6 +110,9 @@ Item {
             Component.onCompleted: {
                 if (searchInput.inputItem) {
                     searchInput.inputItem.forceActiveFocus()
+                    searchInput.inputItem.Keys.onPressed.connect(function (event) {
+                        root.handleKeyPress(event)
+                    })
                 }
             }
         }
