@@ -24,6 +24,35 @@ Item {
     property string answer: "";
     property bool calculationFailed: false;
 
+    ListModel {
+        id: historyModel
+    }
+
+    FileView {
+        id: historyFile
+        path: Quickshell.env("HOME") + "/.config/noctalia-qalculate/history.json"
+        onLoadedChanged: {
+            if (loaded) {
+                var data = JSON.parse(text())
+                if (Array.isArray(data)) {
+                    data.forEach(function(item) {
+                        historyModel.append(item)
+                    })
+                }
+            }
+        }
+    }
+
+    function saveHistory() {
+        var items = []
+        for (var i = 0; i < historyModel.count; i++) {
+            items.push(historyModel.get(i))
+        }
+        try {
+            historyFile.setText(JSON.stringify(items, null, 2))
+        } catch(e) {}
+    }
+
     function extractAnswer(res) {
         if (!res || res.startsWith("warning")) return "";
         var parts = res.split("=");
@@ -82,6 +111,11 @@ Item {
             result = ""
             answer = ""
             pluginApi.closePanel()
+        } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+            if (searchInput.text.trim() !== "" && answer !== "") {
+                historyModel.insert(0, { expression: searchInput.text, result: answer })
+                saveHistory()
+            }
         }
     }
 
@@ -124,6 +158,21 @@ Item {
             Layout.alignment: Qt.AlignTop
             color: root.calculationFailed ? "red" : Color.mPrimary
             font.family: "Monospace"
+        }
+
+        ListView {
+            id: historyView
+            Layout.fillWidth: true
+            Layout.preferredHeight: 120 * Style.uiScaleRatio
+            model: historyModel
+            clip: true
+            delegate: NText {
+                text: expression + " = " + result
+                font.family: "Monospace"
+                font.pixelSize: Style.fontSizeS
+                color: Color.mSecondary
+                height: 24 * Style.uiScaleRatio
+            }
         }
     }
 }
