@@ -8,13 +8,14 @@ import qs.Widgets
 Item {
     id: root
 
+
     property var pluginApi: null
 
     readonly property var geometryPlaceholder: panelContainer
     readonly property bool allowAttach: true
 
-    property real contentPreferredWidth: 680 * Style.uiScaleRatio
-    property real contentPreferredHeight: 540 * Style.uiScaleRatio
+    property real contentPreferredWidth: 560 * Style.uiScaleRatio
+    property real contentPreferredHeight: 600 * Style.uiScaleRatio
 
     anchors.fill: parent
 
@@ -125,6 +126,16 @@ Item {
         panelClipProc.exec({ command: ["bash", "-c", "printf '%s' " + text + " | wl-copy 2>/dev/null"] })
     }
 
+    function removeHistoryEntry(index) {
+        historyView.model.remove(index)
+        saveHistory()
+    }
+
+    function copyHistoryEntry(index) {
+        var entry = historyView.model.get(index)
+        copyToClipboard(entry.result)
+    }
+
     ColumnLayout {
         anchors.top: parent.top
         anchors.left: parent.left
@@ -158,20 +169,77 @@ Item {
             Layout.alignment: Qt.AlignTop
             color: root.calculationFailed ? "red" : Color.mPrimary
             font.family: "Monospace"
+            font.pointSize: Style.fontSizeM
         }
 
-        ListView {
+
+        NListView {
             id: historyView
             Layout.fillWidth: true
-            Layout.preferredHeight: 120 * Style.uiScaleRatio
+            Layout.fillHeight: true
+            Layout.preferredHeight: 420 * Style.uiScaleRatio
+
+            reserveScrollbarSpace: false
+            gradientColor: Settings.data.ui.panelBackgroundOpacity < 1 ? "transparent" : Color.mSurface
+            spacing: Style.marginS
             model: historyModel
             clip: true
-            delegate: NText {
-                text: expression + " = " + result
-                font.family: "Monospace"
-                font.pixelSize: Style.fontSizeS
-                color: Color.mSecondary
-                height: 24 * Style.uiScaleRatio
+
+            delegate: NBox {
+                width: historyView.width
+                color: Color.mSurfaceVariant
+                height: 60
+                radius: Style.iRadiusS
+
+                RowLayout {
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.margins: Style.marginL
+                    anchors.right: parent.right
+
+                    RowLayout {
+                        NText {
+                            text: expression
+                            font.family: "Monospace"
+                            font.pointSize: Style.fontSizeL
+                            color: Color.mSecondary
+                            Layout.alignment: Qt.AlignLeft
+                        }
+
+                        NText {
+                            text: " = "
+                            font.family: "Monospace"
+                            font.pointSize: Style.fontSizeL
+                            Layout.alignment: Qt.AlignLeft
+                        }
+
+                        NText {
+                            text: result
+                            font.family: "Monospace"
+                            font.pointSize: Style.fontSizeL
+                            color: Color.mSecondary
+                            Layout.alignment: Qt.AlignLeft
+                        }
+                    }
+
+                    RowLayout {
+                        anchors.margins: Style.marginS
+                        spacing: Style.marginS
+                        Layout.alignment: Qt.AlignRight
+
+                        NIconButton {
+                            icon: "copy"
+                            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                            onClicked: copyHistoryEntry(index)
+                        }
+
+                        NIconButton {
+                            icon: "trash"
+                            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                            onClicked: removeHistoryEntry(index)
+                        }
+                    }
+                }
             }
         }
     }
