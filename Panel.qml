@@ -23,7 +23,8 @@ Item {
 
     property string result: "";
     property string answer: "";
-    property bool calculationFailed: false;
+    property string warning: "";
+    property string error: "";
 
     ListModel {
         id: historyModel
@@ -64,6 +65,38 @@ Item {
         return val;
     }
 
+    function storeQalcOutput(output)  {
+        var result = ""
+        var answer = ""
+        var warning = ""
+        var error = ""
+        output = output.trim()
+        if (output.includes("\n")) {
+            var parts = output.trim().split("\n")
+            result = parts[1]
+            if (parts[0].startsWith("warning")) {
+                warning = parts[0].substring(9)
+            } else if (parts[0].startsWith("error")) {
+                error = parts[0].substring(7)
+            }
+        } else {
+            result = output.trim()
+        }
+
+        var parts = result.split("=");
+        if (parts.length >= 2) {
+            var val = parts[parts.length - 1].trim();
+            if (val.startsWith("≈ ")) val = val.substring(2);
+            if (val.startsWith("approx. ")) val = val.substring(8);
+            answer = val
+        }
+
+        root.result = result;
+        root.answer = answer;
+        root.warning = warning;
+        root.error = error;
+    }
+
     Timer {
         id: debounceTimer
         interval: 100
@@ -76,9 +109,7 @@ Item {
 
         stdout: StdioCollector {
             onTextChanged: {
-                root.result = text.trim()
-                root.calculationFailed = root.result.startsWith("warning")
-                root.answer = extractAnswer(text.trim())
+                root.storeQalcOutput(text)
             }
         }
     }
@@ -87,6 +118,8 @@ Item {
         if (searchInput.text == "") {
             result = "";
             answer = "";
+            warning = "";
+            error = "";
             return;
         }
         calcProc.command = ["qalc", "-s", "update_exchange_rates 1days", searchInput.text]
@@ -165,10 +198,30 @@ Item {
 
         NText {
             id: resultText
+            Layout.preferredWidth: parent.width
+            wrapMode: Text.WrapAnywhere
+            color: Color.mPrimary
+            font.family: "Monospace"
+            font.pointSize: Style.fontSizeM
             text: root.result
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignTop
-            color: root.calculationFailed ? "red" : Color.mPrimary
+        }
+
+        NText {
+            id: warningText
+            Layout.preferredWidth: parent.width
+            visible: root.warning != ""
+            text: root.warning
+            color: Color.mSecondary
+            font.family: "Monospace"
+            font.pointSize: Style.fontSizeM
+        }
+
+        NText {
+            id: errorText
+            Layout.preferredWidth: parent.width
+            visible: root.error != ""
+            text: root.error
+            color: Color.mError
             font.family: "Monospace"
             font.pointSize: Style.fontSizeM
         }
