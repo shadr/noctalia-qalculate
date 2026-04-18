@@ -149,6 +149,7 @@ Item {
             Layout.alignment: Qt.AlignTop
             fontSize: Style.fontSizeM
             fontFamily: "Monospace"
+            placeholderText: "Enter an expression..."
             radius: Style.iRadiusM
             onTextChanged: updateResults()
 
