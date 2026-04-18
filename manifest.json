@@ -1,0 +1,20 @@
+{
+  "id": "noctalia-qalculate",
+  "name": "Quick Qalculate",
+  "version": "0.0.1",
+  "minNoctaliaVersion": "3.6.0",
+  "author": "shadr",
+  "license": "MIT",
+  "repository": "https://github.com/yourusername/noctalia-plugins",
+  "description": "Quick qalculate prompt inspired by rofi-calc",
+  "entryPoints": {
+    "main": "Main.qml",
+    "panel": "Panel.qml"
+  },
+  "dependencies": {
+    "plugins": []
+  },
+  "metadata": {
+    "defaultSettings": {}
+  }
+}
