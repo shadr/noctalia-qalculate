@@ -167,6 +167,7 @@ Item {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
+        anchors.bottom: parent.bottom
         anchors.margins: Style.marginL
         spacing: Style.marginM
 
@@ -225,7 +226,7 @@ Item {
             id: historyView
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.preferredHeight: 420 * Style.uiScaleRatio
+
 
             reserveScrollbarSpace: false
             gradientColor: Settings.data.ui.panelBackgroundOpacity < 1 ? "transparent" : Color.mSurface
@@ -236,7 +237,7 @@ Item {
             delegate: NBox {
                 width: historyView.width
                 color: Color.mSurfaceVariant
-                height: 60
+                height: 50
                 radius: Style.iRadiusS
 
                 RowLayout {
