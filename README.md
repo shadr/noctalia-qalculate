@@ -2,6 +2,10 @@
 
 A Noctalia plugin that provides a quick calculator panel powered by qalculate.
 
+<p align="center">
+  <img src="/assets/preview.png" alt="Screenshot of the calculator panel with an input text box and history entries visible" />
+</p>
+
 ## Features
 
 - Uses amazing [libqalculate](https://github.com/qalculate/libqalculate)
