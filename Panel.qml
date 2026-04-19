@@ -8,7 +8,6 @@ import qs.Widgets
 Item {
     id: root
 
-
     property var pluginApi: null
 
     readonly property var geometryPlaceholder: panelContainer
@@ -140,11 +139,6 @@ Item {
         if (event.key === Qt.Key_C && event.modifiers & Qt.ControlModifier) {
             event.accepted = true
             copyAnswer()
-        } else if (event.key === Qt.Key_Escape) {
-            searchInput.text = ""
-            result = ""
-            answer = ""
-            pluginApi.closePanel()
         } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
             if (searchInput.text.trim() !== "" && answer !== "") {
                 historyModel.insert(0, { expression: searchInput.text, result: answer })
