@@ -255,23 +255,23 @@ Item {
                         NText {
                             text: expression
                             font.family: "Monospace"
-                            font.pointSize: Style.fontSizeL
-                            color: Color.mSecondary
+                            font.pointSize: Style.fontSizeS
+                            color: Color.mOnSurface
                             Layout.alignment: Qt.AlignLeft
                         }
 
                         NText {
                             text: " = "
                             font.family: "Monospace"
-                            font.pointSize: Style.fontSizeL
+                            font.pointSize: Style.fontSizeS
                             Layout.alignment: Qt.AlignLeft
                         }
 
                         NText {
                             text: result
                             font.family: "Monospace"
-                            font.pointSize: Style.fontSizeL
-                            color: Color.mSecondary
+                            font.pointSize: Style.fontSizeM
+                            color: Color.mTertiary
                             Layout.alignment: Qt.AlignLeft
                         }
                     }
