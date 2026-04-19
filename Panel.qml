@@ -21,6 +21,7 @@ Item {
     readonly property bool panelAnchorVerticalCenter: true;
 
     property string result: "";
+    property string expression: "";
     property string answer: "";
     property string warning: "";
     property string error: "";
@@ -69,6 +70,7 @@ Item {
         var answer = ""
         var warning = ""
         var error = ""
+        var expression = ""
         output = output.trim()
         if (output.includes("\n")) {
             var parts = output.trim().split("\n")
@@ -87,6 +89,8 @@ Item {
             var val = parts[parts.length - 1].trim();
             if (val.startsWith("≈ ")) val = val.substring(2);
             if (val.startsWith("approx. ")) val = val.substring(8);
+
+            expression = parts[0].trim();
             answer = val
         }
 
@@ -94,6 +98,7 @@ Item {
         root.answer = answer;
         root.warning = warning;
         root.error = error;
+        root.expression = expression;
     }
 
     Timer {
@@ -141,7 +146,7 @@ Item {
             copyAnswer()
         } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
             if (searchInput.text.trim() !== "" && answer !== "") {
-                historyModel.insert(0, { expression: searchInput.text, result: answer })
+                historyModel.insert(0, { expression: root.expression, result: answer })
                 saveHistory()
             }
         }
