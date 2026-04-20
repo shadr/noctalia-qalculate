@@ -126,7 +126,7 @@ Item {
             error = "";
             return;
         }
-        calcProc.command = ["qalc", "-s", "update_exchange_rates 1days", "-s", "decimal comma off", searchInput.text]
+        calcProc.command = ["qalc", "-s", "update exchange rates 1", "-s", "decimal comma off", searchInput.text]
         calcProc.running = true;
     }
 
