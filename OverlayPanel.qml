@@ -39,6 +39,24 @@ Variants {
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.exclusionMode: ExclusionMode.Ignore
 
+            // Match launcher overlay blur behavior.
+            BackgroundEffect.blurRegion: Settings.data.general.enableBlurBehind ? panelBlurRegion : null
+            Region {
+                id: panelBlurRegion
+
+                Region {
+                    x: Math.round(panelContainer.x)
+                    y: Math.round(panelContainer.y)
+                    width: Math.round(panelContainer.width)
+                    height: Math.round(panelContainer.height)
+                    radius: Style.radiusL
+                    topLeftCorner: CornerState.Normal
+                    topRightCorner: CornerState.Normal
+                    bottomLeftCorner: CornerState.Normal
+                    bottomRightCorner: CornerState.Normal
+                }
+            }
+
             Shortcut {
                 sequences: ["Escape"]
                 enabled: windowLoader.active
@@ -48,7 +66,7 @@ Variants {
 
             Rectangle {
                 anchors.fill: parent
-                color: Qt.alpha(Color.mSurface, Settings.data.general.dimmerOpacity || 0.2)
+                color: Qt.alpha(Color.mSurface, Settings.data.general.dimmerOpacity)
 
                 MouseArea {
                     anchors.fill: parent
@@ -56,19 +74,44 @@ Variants {
                 }
             }
 
-            NBox {
-                id: panelBox
+            NDropShadow {
+                source: panelContainer
+                anchors.fill: panelContainer
+                autoPaddingEnabled: true
+            }
+
+            Item {
+                id: panelContainer
                 width: 560 * Style.uiScaleRatio
                 height: 600 * Style.uiScaleRatio
                 anchors.centerIn: parent
-                radius: Style.radiusL
-                color: Color.mSurface
+                clip: false
 
-                PanelContent {
+                NBox {
+                    id: panelSurface
                     anchors.fill: parent
-                    pluginApi: root.pluginApi
-                    onRequestClose: function() {
-                        root.closeRequested()
+                    radius: Style.radiusL
+                    color: Qt.alpha(Color.mSurface, Color.adaptiveOpacity(Settings.data.ui.panelBackgroundOpacity))
+                }
+
+                Rectangle {
+                    anchors.fill: parent
+                    color: "transparent"
+                    radius: Style.radiusL
+                    border.color: Style.boxBorderColor
+                    border.width: Style.borderS
+                }
+
+                Item {
+                    id: panelBox
+                    anchors.fill: parent
+
+                    PanelContent {
+                        anchors.fill: parent
+                        pluginApi: root.pluginApi
+                        onRequestClose: function() {
+                            root.closeRequested()
+                        }
                     }
                 }
             }
