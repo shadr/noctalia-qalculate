@@ -9,12 +9,15 @@
   "description": "Quick qalculate prompt inspired by rofi-calc",
   "entryPoints": {
     "main": "Main.qml",
-    "panel": "Panel.qml"
+    "panel": "Panel.qml",
+    "settings": "Settings.qml"
   },
   "dependencies": {
     "plugins": []
   },
   "metadata": {
-    "defaultSettings": {}
+    "defaultSettings": {
+      "overlayLayer": false
+    }
   }
 }
