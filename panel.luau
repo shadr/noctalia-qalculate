@@ -142,7 +142,7 @@ function onInputChange(value)
 
   calculating = true
   local ok = noctalia.runAsync(
-    `qalc +u8 -s "update exchange rates 1" -s "decimal comma off" {shellQuote(value)}`,
+    `qalc -u8 -s "update exchange rates 1" -s "decimal comma off" {shellQuote(value)}`,
     onQalcResult
   )
   if not ok then
