@@ -118,6 +118,23 @@ function onInputChange(value)
     return
   end
 
+  local function generateQalcCommand(inputText)
+    local command = { "qalc" }
+
+    if noctalia.getConfig("unicode") then
+      table.insert(command, "-u8")
+    else
+      table.insert(command, "+u8")
+    end
+
+    table.insert(command, "-s 'update exchange rates 1'")
+    table.insert(command, "-s 'decimal comma off'")
+
+    table.insert(command, shellQuote(value))
+
+    return table.concat(command, " ")
+  end
+
   local function onQalcResult(res)
     calculating = false
     if inputText ~= value then
@@ -141,10 +158,8 @@ function onInputChange(value)
   end
 
   calculating = true
-  local ok = noctalia.runAsync(
-    `qalc -u8 -s "update exchange rates 1" -s "decimal comma off" {shellQuote(value)}`,
-    onQalcResult
-  )
+  local ok = noctalia.runAsync( generateQalcCommand(), onQalcResult )
+
   if not ok then
     calculating = false
     clearResults()
