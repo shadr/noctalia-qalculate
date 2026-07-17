@@ -7,6 +7,13 @@ license = "MIT"
 description = "Quick qalculate prompt inspired by rofi-calc"
 dependencies = ["qalc"]
 
+[[setting]]
+key             = "unicode"
+type            = "bool"
+label_key       = "settings.unicode.label"
+description_key = "settings.unicode.description"
+default         = true
+
 [[panel]]
 id = "panel"
 entry = "panel.luau"
