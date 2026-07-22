@@ -1,4 +1,4 @@
-id = "shadr/noctalia-qalculate"
+id = "shadr/quick-qalculate"
 name = "Quick Qalculate"
 version = "0.2.0"
 min_noctalia = "5.0.0"

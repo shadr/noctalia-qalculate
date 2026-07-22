@@ -11,7 +11,7 @@ local expressionText = ""
 local history = {}
 
 local HOME = noctalia.getenv("HOME") or ""
-local HISTORY_DIR = HOME .. "/.config/noctalia-qalculate"
+local HISTORY_DIR = HOME .. "/.config/quick-qalculate"
 local HISTORY_PATH = HISTORY_DIR .. "/history.json"
 
 local function shellQuote(s)

@@ -1,78 +1,54 @@
-# Noctalia Qalculate
 
-A Noctalia plugin that provides a quick calculator panel powered by qalculate.
+# Quick Qalculate
 
-<p align="center">
-  <img src="/assets/preview.png" alt="Screenshot of the calculator panel with an input text box and history entries visible" />
-</p>
+Quick calculator panel powered by [libqalculate](https://github.com/qalculate/libqalculate), inspired by rofi-calc.
 
-## Features
+![Qalculate Panel Thumbnail](quick-qalculate-thumbnail.webp)
 
-- Uses amazing [libqalculate](https://github.com/qalculate/libqalculate)
-- Persistent expression history
-- ~~Copy results to clipboard~~
+## Plugin
+
+| Field | Value |
+| --- | --- |
+| ID | `shadr/quick-qalculate` |
+| Entries | panel: `panel` |
 
 ## Requirements
 
-- [noctalia v5](https://github.com/noctalia-dev/noctalia)
-- [qalc](https://github.com/qalculate/libqalculate)
-
-## Installation
-
-1. Clone this repository into your Noctalia plugins directory:
-
-```sh
-mkdir -p ~/.local/share/noctalia/plugins
-cd ~/.local/share/noctalia/plugins
-git clone https://github.com/shadr/noctalia-qalculate
-```
-
-3. (Optional) If Noctalia doesn't see the plugin, then add that `plugins` directory as a plugins source for Noctalia
-
-   `Noctalia Settings > Plugins > Add source > Path`
-
-4. Enable the plugin in Noctalia settings
-
-5. Bind a key to open the calculator panel
+-- `qalc` binary from [libqalculate](https://github.com/qalculate/libqalculate)
 
 ## Usage
 
-### IPC Command
-
-The plugin uses built-in Noctalia messages to trigger the calculator panel
+Open the panel with the IPC command:
 
 ```sh
-noctalia msg panel-toggle shadr/noctalia-qalculate:panel
+noctalia msg panel-toggle shadr/quick-qalculate:panel
 ```
-
-### Keyboard Shortcuts
 
 Once the panel is open:
 
-- **Enter** - Save current calculation to history
-- ~~**Ctrl+C** - Copy result to the clipboard~~ currently not supported in Noctalia v5
-- **Esc** - Close panel
+- **Enter** — evaluate and save current expression to the history
+- **Esc** — close panel
 
-## Key Binding Examples
-
-#### Niri
+Bind a key in your compositor to open the plugin panel:
 
 ```
+# Niri
 binds {
-    Mod+A { spawn "noctalia" "msg" "panel-toggle" "shadr/noctalia-qalculate:panel"; }
+    Mod+A { spawn "noctalia" "msg" "panel-toggle" "shadr/quick-qalculate:panel"; }
 }
+
+# Hyprland
+bind = Mod+A, exec, noctalia msg panel-toggle shadr/quick-qalculate:panel
 ```
 
-#### Hyprland
+## Settings
 
-```
-bind = Mod+A, exec, noctalia msg panel-toggle shadr/noctalia-qalculate:panel
-```
+| Setting | Type | Default | Description |
+| --- | --- | --- | --- |
+| `unicode` | `bool` | `true` | Use Unicode characters in output when possible. |
 
-## Legacy Noctalia v4
-You can find quickshell based version of this plugin in [another](https://github.com/shadr/noctalia-qalculate/tree/noctalia-v4) branch.
+## Notes
 
-
-## License
-
-MIT License - See [LICENSE](LICENSE) for details.
+- The history file is written to the `$HOME/.config/quick-qalculate`
+- `qalc` is spawned as a subprocess for each evaluation.
+- Copying results to clipboard is currently unsupported in Noctalia v5.
