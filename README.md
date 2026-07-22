@@ -14,7 +14,7 @@ Quick calculator panel powered by [libqalculate](https://github.com/qalculate/li
 
 ## Requirements
 
--- `qalc` binary from [libqalculate](https://github.com/qalculate/libqalculate)
+- `qalc` binary from [libqalculate](https://github.com/qalculate/libqalculate)
 
 ## Usage
 
