@@ -233,7 +233,7 @@ function render()
   panel.render(ui.column({ flexGrow = 1, gap = 12, align = "stretch" }, {
     ui.input({
       key = "input",
-      placeholder = "Enter an expression...",
+      placeholder = noctalia.tr("expression_prompt"),
       focus = true,
       onChange = "onInputChange",
       onSubmit = "onInputSubmit",
@@ -282,6 +282,9 @@ do
       end
     end
   end
+  -- TODO: This is very ugly, but I can't found another way to dynamically bind functions to history rows,
+  -- stole the solution from an official plugin.
+  -- https://github.com/noctalia-dev/official-plugins/blob/4527b56f988369110e0b371cba88a911fb51e165/mpvpaper/panel.luau#L468
   onCopy_0 = c(1); onRemove_0 = r(1)
   onCopy_1 = c(2); onRemove_1 = r(2)
   onCopy_2 = c(3); onRemove_2 = r(3)
