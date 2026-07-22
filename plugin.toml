@@ -7,6 +7,7 @@ author = "shadr"
 license = "MIT"
 description = "Quick qalculate prompt inspired by rofi-calc"
 dependencies = ["qalc"]
+tags = ["panel", "utility"]
 
 [[setting]]
 key             = "unicode"
